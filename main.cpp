@@ -20,7 +20,6 @@ struct __get_str<T, string_t< Xs... >, I, true >
    using type = typename __get_str<T, string_t<Xs...,T{}.data[I]>, I + 1, T{}.data[I] != '\0' >::type;
 };
 
-
 template <typename T>
 struct __length;
 
@@ -29,7 +28,6 @@ struct __length< T< Xs... > >
 {
   constexpr static auto value = sizeof...(Xs);
 };
-
 
 namespace io{
 template < uint8_t ... Xs >
@@ -62,8 +60,7 @@ constexpr auto length( T && )
 
 int main()
 {
-  constexpr auto foo_str = []{ struct { const char * data = "wtf is going here?"; } _; return _; };
-  uint8_t data[meta::string::length(TO_CONST_STRING("123")) ] {};
+  uint8_t data[meta::string::length(TO_CONST_STRING("123"))] {};
   static_assert( sizeof data == 4 );
-  std::cout << TO_CONST_STRING("constexpr string") << "\n";
+  std::cout << TO_CONST_STRING("wtf is going here?") << "\n";
 }
