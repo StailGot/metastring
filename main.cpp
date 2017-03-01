@@ -2,9 +2,6 @@
 #include <iostream>
 #include <type_traits>
 
-template < class T >
-constexpr auto V = 42; 
-
 namespace meta::string{
 
 template <uint8_t ... >
@@ -66,22 +63,7 @@ constexpr auto length( T && )
 int main()
 {
   constexpr auto foo_str = []{ struct { const char * data = "wtf is going here?"; } _; return _; };
-  constexpr auto foo = []{ return 42; };
-
-  uint8_t data[foo()] = {};
-  static_assert( sizeof data == foo() );
-  std::cout << sizeof data << "\n";
-
-  // {
-  //   using result = meta::string::get_str_t< decltype(foo_str()) >;
-  //   std::cout << result{};
-  // }
-
-  {
-    uint8_t data[meta::string::length(TO_CONST_STRING("123")) ] {};
-    static_assert( sizeof data == 4 );
-
-    std::cout << TO_CONST_STRING("constexpr string") << "\n";
-  }
-
+  uint8_t data[meta::string::length(TO_CONST_STRING("123")) ] {};
+  static_assert( sizeof data == 4 );
+  std::cout << TO_CONST_STRING("constexpr string") << "\n";
 }
