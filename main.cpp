@@ -28,23 +28,40 @@ template < uint8_t ... Xs >
 std::ostream & operator<<( std::ostream & os, meta::string::string_t< Xs ... > )
 {
   return [&]{for( auto i : {Xs ...} ) os << i;}(), os;
-}}}
+}
+}}
 
 template <typename T>
 using get_str_t = typename details::__get_str< T, string_t<>, 0, true>::type;
 using details::io::operator<<;
 
+template < typename F >
+constexpr auto to_constexpr_string( F && f )
+{
+  return meta::string::get_str_t< decltype(f()) >{};
 }
+}
+
+#define CONST_STRING(str) []{ struct { const char * data = str; } _; return _; }
+#define TO_CONST_STRING(str) meta::string::to_constexpr_string( CONST_STRING(str) )
+
 
 int main()
 {
-  constexpr auto foo_str = []{ struct _ { const char * data = "wtf is going here?"; }; return _{}; };
+  constexpr auto foo_str = []{ struct { const char * data = "wtf is going here?"; } _; return _; };
   constexpr auto foo = []{ return 42; };
 
   uint8_t data[foo()] = {};
   static_assert( sizeof data == foo() );
   std::cout << sizeof data << "\n";
 
-  using result = meta::string::get_str_t< decltype(foo_str()) >;
-  std::cout << result{};
+  {
+    using result = meta::string::get_str_t< decltype(foo_str()) >;
+    std::cout << result{};
+  }
+
+  {
+    std::cout << TO_CONST_STRING("meta string here");
+  }
+
 }
